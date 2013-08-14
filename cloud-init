@@ -2,162 +2,30 @@
 apt_sources:
  - source: "deb ${REPO} gridcentric multiverse"
    key: |
-      -----BEGIN PGP PUBLIC KEY BLOCK-----
-      Version: GnuPG v1.4.11 (GNU/Linux)
+       -----BEGIN PGP PUBLIC KEY BLOCK-----
+       Version: GnuPG v1.4.11 (GNU/Linux)
       
-      mQENBFAQqgUBCADOMIkW4BliIOZyks8addo/SJjXRVjbAs2/O5pINHTRRo8DabCB
-      ISbKAjmxpkepQ/mN2o4cxK+3IGpSVQhrhLRyBRRMZv1MH4n+Yoq2AemO83ILQthi
-      39jHwKm107untAeLKTwt1DSY1HnFEQJl5bwG7HHqz3iD9HCwY5bX4eDrm4AxW0NG
-      rPdZpnLcuZfgMWEzRnhSkaTrCKiysQs5BVF3twbmzgO6hK26XjEOCNeOgHWGAbjZ
-      tky9zcjg2c1FG6g7pYyPyeLkSpF+CfhYe5pclrSvB708wVb+NczBD9MfInV9Er9/
-      UYr2kd4rYttc/tUFSCPjKoT9grO7dtIHbZVtABEBAAG0J0dyaWRjZW50cmljIElu
-      Yy4gPGluZm9AZ3JpZGNlbnRyaWMuY29tPokBOAQTAQIAIgUCUBCqBQIbAwYLCQgH
-      AwIGFQgCCQoLBBYCAwECHgECF4AACgkQ9sSiVmboP0x1eAgAkpUEzJ5ZxjZPxbPH
-      de5ryZpUvb/3VKsXiV6mRPHM78Psdjc68dnm3n1V57g5zc57n2mD/li80Y+bqzgk
-      eWjMg6JRr1bBIgz2kKVtXQhmDWsk9tu3KW3AieVArsZWjGo8Oab4jNZO0gq2QOcR
-      Bt/uTYW2wU9xO0S/AyRtwBUqjDP7Q9LKp2i5UrBCtQfXQ1WFvUgQzhcYwFkoO/oH
-      bi4S4hcMsGBQjsrtQkorwj8Fp3QuUErvjnjT6+6RqO+W2SjYb7eFSBBHRD6Wnas4
-      TDETaIfuEOonLXzRjaQ2QTprVIZDQkY9Qnp/BZXfWheXeIkq6jsWyV87Wmwm+V8e
-      zGdl0Q==
+       mQENBFAQqgUBCADOMIkW4BliIOZyks8addo/SJjXRVjbAs2/O5pINHTRRo8DabCB
+       ISbKAjmxpkepQ/mN2o4cxK+3IGpSVQhrhLRyBRRMZv1MH4n+Yoq2AemO83ILQthi
+       39jHwKm107untAeLKTwt1DSY1HnFEQJl5bwG7HHqz3iD9HCwY5bX4eDrm4AxW0NG
+       rPdZpnLcuZfgMWEzRnhSkaTrCKiysQs5BVF3twbmzgO6hK26XjEOCNeOgHWGAbjZ
+       tky9zcjg2c1FG6g7pYyPyeLkSpF+CfhYe5pclrSvB708wVb+NczBD9MfInV9Er9/
+       UYr2kd4rYttc/tUFSCPjKoT9grO7dtIHbZVtABEBAAG0J0dyaWRjZW50cmljIElu
+       Yy4gPGluZm9AZ3JpZGNlbnRyaWMuY29tPokBOAQTAQIAIgUCUBCqBQIbAwYLCQgH
+       AwIGFQgCCQoLBBYCAwECHgECF4AACgkQ9sSiVmboP0x1eAgAkpUEzJ5ZxjZPxbPH
+       de5ryZpUvb/3VKsXiV6mRPHM78Psdjc68dnm3n1V57g5zc57n2mD/li80Y+bqzgk
+       eWjMg6JRr1bBIgz2kKVtXQhmDWsk9tu3KW3AieVArsZWjGo8Oab4jNZO0gq2QOcR
+       Bt/uTYW2wU9xO0S/AyRtwBUqjDP7Q9LKp2i5UrBCtQfXQ1WFvUgQzhcYwFkoO/oH
+       bi4S4hcMsGBQjsrtQkorwj8Fp3QuUErvjnjT6+6RqO+W2SjYb7eFSBBHRD6Wnas4
+       TDETaIfuEOonLXzRjaQ2QTprVIZDQkY9Qnp/BZXfWheXeIkq6jsWyV87Wmwm+V8e
+       zGdl0Q==
 package_upgrade: true
 packages:
  - nginx
  - dnsmasq
  - reactor-server
-write_files:
- - content: |
-      * * * * * root /etc/cron.daily/logrotate
-   path: /etc/cron.d/logrotate
-   owner: root:root
-   permissions: '0644'
- - content: |
-      /var/log/reactor.log {
-          daily
-          missingok
-          rotate 10
-          size 50M
-          compress
-          delaycompress
-          notifempty
-          create 0640 root root
-          sharedscripts
-      }
-   path: /etc/logrotate.d/reactor
-   owner: root:root
-   permissions: '0644'
- - content: |
-      /var/log/nginx/*.log {
-          daily
-          missingok
-          rotate 10
-          size 5M
-          compress
-          delaycompress
-          notifempty
-          create 0640 www-data adm
-          sharedscripts
-          prerotate
-              if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-                      run-parts /etc/logrotate.d/httpd-prerotate; \
-              fi; \
-          endscript
-          postrotate
-              [ ! -f /var/run/nginx.pid ] || kill -USR1 `cat /var/run/nginx.pid`
-          endscript
-      }
-   path: /etc/logrotate.d/nginx
-   owner: root:root
-   permissions: '0644'
- - content: |
-      user www-data;
-      worker_processes 4;
-      pid /var/run/nginx.pid;
-      
-      events {
-          worker_connections 768;
-          multi_accept on;
-      }
-      
-      http {
-          ## Basic settings
-      
-          sendfile on;
-          tcp_nopush on;
-          tcp_nodelay on;
-          keepalive_timeout 65;
-          types_hash_max_size 2048;
-          server_tokens off;
-      
-          server_names_hash_bucket_size 128;
-          server_name_in_redirect off;
-      
-          include /etc/nginx/mime.types;
-          default_type application/octet-stream;
-      
-          ## Logging Settings
-      
-          access_log /var/log/nginx/access.log;
-          error_log /var/log/nginx/error.log;
-      
-          ## Gzip Settings
-      
-          gzip on;
-          gzip_disable "msie6";
-      
-          gzip_vary on;
-          gzip_proxied any;
-          gzip_comp_level 6;
-          gzip_buffers 16 8k;
-          gzip_http_version 1.1;
-          gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-      
-          ## Virtual Host Configs
-      
-          include /etc/nginx/conf.d/*.conf;
-          include /etc/nginx/sites-enabled/*;
-      }
-   path: /etc/nginx.conf
-   owner: root:root
-   permissions: '0644'
- - content: |
-      #!/bin/bash
-      # Wait for reactor to start.
-      echo -n "Waiting for Reactor to start..."
-      while ! reactor list >/dev/null 2>/dev/null; do
-          echo -n "."
-      done
-      echo "started."
-      # Load the example endpoints.
-      for endpoint in /etc/reactor/*; do
-          reactor manage $(basename $endpoint) < $endpoint
-      done
-   path: /tmp/reactor-init.sh
-   owner: root:root
-   permissions: '0755'
- - content: |
-      [endpoint]
-      +url = http://
-      +static_instances = localhost
-      +port = 8080
-      +loadbalancer = nginx
-      +[loadbalancer:nginx]
-      +ssl = false
-   path: /etc/reactor/apihttp
-   owner: root:root
-   permissions: '0644'
- - content: |
-      [endpoint]
-      url = https://
-      static_instances = localhost
-      port = 8080
-      loadbalancer = nginx
-      [loadbalancer:nginx]
-      ssl = true
-   path: /etc/reactor/apihttps
-   owner: root:root
-   permissions: '0755'
 runcmd:
- - rm -f etc/nginx/sites-enabled/*
+ - rm -f /etc/nginx/sites-enabled/*
+ - mv /etc/reactor/example/nginx/nginx.conf /etc/nginx/nginx.conf
  - /etc/init.d/nginx restart
- - /etc/init.d/dnsmasq restart
- - /tmp/reactor-init.sh
+ - reactor-defaults
