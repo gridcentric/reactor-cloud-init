@@ -119,3 +119,45 @@ write_files:
    path: /etc/nginx.conf
    owner: root:root
    permissions: '0644'
+ - content: |
+      #!/bin/bash
+      # Wait for reactor to start.
+      echo -n "Waiting for Reactor to start..."
+      while ! reactor list >/dev/null 2>/dev/null; do
+          echo -n "."
+      done
+      echo "started."
+      # Load the example endpoints.
+      for endpoint in /etc/reactor/*; do
+          reactor manage $(basename $endpoint) < $endpoint
+      done
+   path: /tmp/reactor-init.sh
+   owner: root:root
+   permissions: '0755'
+ - content: |
+      [endpoint]
+      +url = http://
+      +static_instances = localhost
+      +port = 8080
+      +loadbalancer = nginx
+      +[loadbalancer:nginx]
+      +ssl = false
+   path: /etc/reactor/apihttp
+   owner: root:root
+   permissions: '0644'
+ - content: |
+      [endpoint]
+      url = https://
+      static_instances = localhost
+      port = 8080
+      loadbalancer = nginx
+      [loadbalancer:nginx]
+      ssl = true
+   path: /etc/reactor/apihttps
+   owner: root:root
+   permissions: '0755'
+runcmd:
+ - rm -f etc/nginx/sites-enabled/*
+ - /etc/init.d/nginx restart
+ - /etc/init.d/dnsmasq restart
+ - /tmp/reactor-init.sh
