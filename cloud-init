@@ -1,6 +1,6 @@
 #cloud-config
 apt_sources:
- - source: "deb http://download.gridcentric.com/reactor/${KEY}/reactor/precise gridcentric multiverse"
+ - source: "deb http://downloads.gridcentric.com/reactor/${KEY}/reactor/precise gridcentric multiverse"
    key: |
        -----BEGIN PGP PUBLIC KEY BLOCK-----
        Version: GnuPG v1.4.11 (GNU/Linux)
